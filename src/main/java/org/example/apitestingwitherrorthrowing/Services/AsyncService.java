@@ -1,5 +1,6 @@
 package org.example.apitestingwitherrorthrowing.Services;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.apitestingwitherrorthrowing.Entities.Song;
@@ -32,5 +33,29 @@ public class AsyncService {
         }
         System.out.println("getAllSongsByMood: " + songLists);
         return CompletableFuture.completedFuture(songLists);
+    }
+
+    @Transactional
+    public List<Song> saveAllSongs(List<Song> songs) {
+        try {
+            songRepository.saveAll(songs);
+        }
+        catch (Exception e) {
+            log.error(e.getMessage()+"there was an error saving all the songs");
+            throw new BusinessException(e.getMessage()+"there was an error saving all the songs");
+        }
+        return songs;
+    }
+
+    public List<Song> getAllSongs() {
+        List<Song> listOfSongs;
+        try {
+            listOfSongs = (List<Song>) songRepository.findAll();
+        }
+        catch (Exception e) {
+            log.error(e.getMessage()+"there was an error getting all the songs");
+            throw new BusinessException(e.getMessage()+"there was an error getting all the songs");
+        }
+        return listOfSongs;
     }
 }

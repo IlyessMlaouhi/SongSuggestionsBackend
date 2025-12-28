@@ -26,9 +26,20 @@ public class SongController {
       return    asyncService.save(song).thenApply(ResponseEntity::ok);
     }
 
+    @PostMapping("allsongs")
+    public ResponseEntity<List<Song>> saveAllSongs( @RequestBody List<Song> songs) {
+     List<Song> listOfSongs= asyncService.saveAllSongs(songs);
+        return ResponseEntity.ok(listOfSongs);
+    }
+
     @GetMapping
     public CompletableFuture<ResponseEntity<List<Song>>> findAllByMood(@RequestParam String mood) {
      return  asyncService.getAllSongsByMood(mood).thenApply(ResponseEntity::ok);
+    }
+    @GetMapping("allsongs")
+    public ResponseEntity<List<Song>> findAll() {
+        List<Song> listOfSongs = asyncService.getAllSongs();
+        return ResponseEntity.ok(listOfSongs);
     }
 
 }

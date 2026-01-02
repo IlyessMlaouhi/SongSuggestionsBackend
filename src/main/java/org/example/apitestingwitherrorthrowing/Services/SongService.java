@@ -10,12 +10,11 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class AsyncService {
+public class SongService {
 
     SongRepository songRepository;
 

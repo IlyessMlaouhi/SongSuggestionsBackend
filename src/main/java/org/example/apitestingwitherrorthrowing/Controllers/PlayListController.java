@@ -1,6 +1,7 @@
 package org.example.apitestingwitherrorthrowing.Controllers;
 
 
+import org.example.apitestingwitherrorthrowing.Entities.PlayListCreateRequest;
 import org.example.apitestingwitherrorthrowing.Entities.Playlist;
 import org.example.apitestingwitherrorthrowing.Services.PlayListService;
 import org.springframework.http.ResponseEntity;
@@ -25,16 +26,16 @@ public class PlayListController {
         return ResponseEntity.status(200).body(AllPlaylists);
     }
 
-    @GetMapping("byid")
-    public ResponseEntity<List<Playlist>> getPlaylistById(@RequestParam String username) {
+    @GetMapping("byname")
+    public ResponseEntity<List<Playlist>> getPlaylistByName(@RequestParam String username) {
         List<Playlist> AllPlaylists = playListService.getPlayListsbyUser(username);
          return ResponseEntity.status(200).body(AllPlaylists);
     }
 
     @PostMapping
-    public ResponseEntity<Playlist> createPlaylist(@RequestBody Playlist playlist) {
-        playListService.addplaylist(playlist);
-        return ResponseEntity.status(201).body(playlist);
+    public ResponseEntity<String> createPlaylist(@RequestBody PlayListCreateRequest playListCreateRequest) {
+         playListService.addplaylist(playListCreateRequest);
+        return ResponseEntity.status(201).body(" playlist saved succesfully");
     }
 
     @DeleteMapping

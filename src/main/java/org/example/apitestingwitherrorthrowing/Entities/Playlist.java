@@ -2,13 +2,17 @@ package org.example.apitestingwitherrorthrowing.Entities;
 
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 
 public class Playlist {
 
@@ -17,7 +21,7 @@ public class Playlist {
     private Long id;
     @Column(name = "name", nullable = false)
     private String name;
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY,optional = false)
     @JoinColumn(name = "user_id")
     private   User user;
 

@@ -2,6 +2,10 @@ package org.example.apitestingwitherrorthrowing.Controllers;
 
 import org.example.apitestingwitherrorthrowing.Entities.Song;
 import org.example.apitestingwitherrorthrowing.Services.SongService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,11 +39,6 @@ public class SongController {
     public CompletableFuture<ResponseEntity<List<Song>>> findAllByMood(@RequestParam String mood) {
      return  songService.getAllSongsByMood(mood).thenApply(ResponseEntity::ok);
     }
-    @GetMapping("allsongs")
-    public ResponseEntity<List<Song>> findAll() {
-        List<Song> listOfSongs = songService.getAllSongs();
-        return ResponseEntity.ok(listOfSongs);
-    }
 
     @DeleteMapping
     public ResponseEntity<String> delete(@RequestParam String songname) {
@@ -51,6 +50,18 @@ public class SongController {
     public ResponseEntity<String> update(@RequestBody Song song) {
         songService.updateSong(song);
         return ResponseEntity.status(200).body("Song Updated successfully");
+    }
+
+    @GetMapping("allsongs")
+    public ResponseEntity<Page<Song>> findByMoodAndGenre(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String genre,
+            @RequestParam(required = false) String mood
+    ) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("title"));
+        return ResponseEntity.status(200).body(songService.getSongs(genre, mood, pageable));
+
     }
 
 }

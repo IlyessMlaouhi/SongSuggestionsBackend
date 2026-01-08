@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.apitestingwitherrorthrowing.Entities.Song;
 import org.example.apitestingwitherrorthrowing.Exceptions.BusinessException;
 import org.example.apitestingwitherrorthrowing.Repositories.SongRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -47,17 +49,6 @@ public class SongService {
         return songs;
     }
 
-    public List<Song> getAllSongs() {
-        List<Song> listOfSongs;
-        try {
-            listOfSongs = (List<Song>) songRepository.findAll();
-        }
-        catch (Exception e) {
-            log.error(e.getMessage()+"there was an error getting all the songs");
-            throw new BusinessException(e.getMessage()+"there was an error getting all the songs");
-        }
-        return listOfSongs;
-    }
     public void deleteSongByName(String songName) {
         try {
             songRepository.deleteSongByName(songName);
@@ -68,6 +59,25 @@ public class SongService {
             throw new BusinessException(e.getMessage()+"there was an error deleting the song named"+songName);
         }
     }
+
+    public Page<Song> getSongs(
+            String genre,
+            String mood,
+            Pageable pageable
+    ) {
+        if (genre != null && mood != null) {
+            return songRepository.findSongByGenreAndMood(genre, mood, pageable);
+        }
+        if (genre != null) {
+            return songRepository.findByGenre(genre, pageable);
+        }
+        if (mood != null) {
+            return songRepository.findByMood(mood, pageable);
+        }
+        return songRepository.findAll(pageable);
+
+    }
+
 
     public Song updateSong(Song song) {
         Long id = song.getId();

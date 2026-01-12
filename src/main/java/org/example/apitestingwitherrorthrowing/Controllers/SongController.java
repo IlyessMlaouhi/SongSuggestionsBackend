@@ -1,5 +1,6 @@
 package org.example.apitestingwitherrorthrowing.Controllers;
 
+import org.example.apitestingwitherrorthrowing.Dtos.SongDto;
 import org.example.apitestingwitherrorthrowing.Entities.Song;
 import org.example.apitestingwitherrorthrowing.Services.SongService;
 import org.springframework.data.domain.Page;
@@ -59,9 +60,15 @@ public class SongController {
             @RequestParam(required = false) String genre,
             @RequestParam(required = false) String mood
     ) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("title"));
+        Pageable pageable = PageRequest.of(page, size, Sort.by("releaseDate"));
         return ResponseEntity.status(200).body(songService.getSongs(genre, mood, pageable));
 
+    }
+
+    @GetMapping("search")
+    public ResponseEntity<List<SongDto>> findByMoodAndGenre(@RequestParam String name){
+        List<SongDto> songDto = songService.FetchSongFromApi(name);
+        return ResponseEntity.status(200).body(songDto);
     }
 
 }

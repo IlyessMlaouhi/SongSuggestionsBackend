@@ -3,14 +3,21 @@ package org.example.apitestingwitherrorthrowing.Services;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.apitestingwitherrorthrowing.Dtos.DeezerResponse;
+import org.example.apitestingwitherrorthrowing.Dtos.SongDto;
+import org.example.apitestingwitherrorthrowing.Entities.DeezerTrack;
 import org.example.apitestingwitherrorthrowing.Entities.Song;
 import org.example.apitestingwitherrorthrowing.Exceptions.BusinessException;
+import org.example.apitestingwitherrorthrowing.Exceptions.SongNotFoundException;
 import org.example.apitestingwitherrorthrowing.Repositories.SongRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriUtils;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 @Slf4j
@@ -19,6 +26,10 @@ import java.util.concurrent.CompletableFuture;
 public class SongService {
 
     SongRepository songRepository;
+
+
+    private final RestTemplate restTemplate = new RestTemplate();
+
 
     @Async
     public CompletableFuture<Song> save(Song song) {
@@ -93,5 +104,38 @@ public class SongService {
 
         return songRepository.save(existing);
     }
+
+
+    public List<SongDto> FetchSongFromApi(String name){
+
+        String url = "https://api.deezer.com/search?q=" + UriUtils.encode(name, StandardCharsets.UTF_8);
+
+        DeezerResponse response = restTemplate.getForObject(url, DeezerResponse.class);
+
+        if(response==null || response.getData()==null || response.getData().isEmpty()){
+            throw new SongNotFoundException("there aren't any songs");
+        }
+
+        return response.getData()
+                .stream()
+                .limit(10)
+                .map(this::mapToDto)
+                .toList();
+    }
+
+
+
+    private SongDto mapToDto(DeezerTrack track) {
+        SongDto dto = new SongDto();
+        dto.setId(track.getId());
+        dto.setTitle(track.getTitle());
+        dto.setArtist(track.getArtist().getName());
+        dto.setAlbum(track.getAlbum().getTitle());
+        dto.setCoverUrl(track.getAlbum().getCover_medium());
+        dto.setPreviewUrl(track.getPreview());
+        return dto;
+    }
+
+
 
 }

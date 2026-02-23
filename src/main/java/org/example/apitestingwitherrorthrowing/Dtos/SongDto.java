@@ -14,7 +14,5 @@ public class SongDto {
     private String title;
     private String artist;
     private String album;
-    private String coverUrl;
-    private String previewUrl;
 
 }

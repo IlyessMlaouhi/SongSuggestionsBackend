@@ -131,8 +131,6 @@ public class SongService {
         dto.setTitle(track.getTitle());
         dto.setArtist(track.getArtist().getName());
         dto.setAlbum(track.getAlbum().getTitle());
-        dto.setCoverUrl(track.getAlbum().getCover_medium());
-        dto.setPreviewUrl(track.getPreview());
         return dto;
     }
 

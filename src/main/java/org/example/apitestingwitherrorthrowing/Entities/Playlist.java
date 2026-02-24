@@ -1,6 +1,7 @@
 package org.example.apitestingwitherrorthrowing.Entities;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,6 +23,7 @@ public class Playlist {
     @Column(name = "name", nullable = false)
     private String name;
     @ManyToOne(fetch = FetchType.LAZY,optional = false)
+    @JsonBackReference
     @JoinColumn(name = "user_id")
     private   User user;
 

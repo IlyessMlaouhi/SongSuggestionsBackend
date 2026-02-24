@@ -2,6 +2,7 @@ package org.example.apitestingwitherrorthrowing.Controllers;
 
 
 import org.example.apitestingwitherrorthrowing.Dtos.PlayListCreateRequest;
+import org.example.apitestingwitherrorthrowing.Dtos.PlayListDto;
 import org.example.apitestingwitherrorthrowing.Entities.Playlist;
 import org.example.apitestingwitherrorthrowing.Services.PlayListService;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +22,8 @@ public class PlayListController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Playlist>> getAllPlaylists() {
-        List<Playlist> AllPlaylists = playListService.getAllPlayLists();
+    public ResponseEntity<List<PlayListDto>> getAllPlaylists() {
+        List<PlayListDto> AllPlaylists = playListService.getAllPlayLists();
         return ResponseEntity.status(200).body(AllPlaylists);
     }
 

@@ -2,6 +2,8 @@ package org.example.apitestingwitherrorthrowing.Services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.apitestingwitherrorthrowing.Dtos.PlayListCreateRequest;
+import org.example.apitestingwitherrorthrowing.Dtos.PlayListDto;
+import org.example.apitestingwitherrorthrowing.Dtos.SongDto;
 import org.example.apitestingwitherrorthrowing.Entities.Playlist;
 import org.example.apitestingwitherrorthrowing.Entities.Song;
 import org.example.apitestingwitherrorthrowing.Entities.User;
@@ -30,12 +32,43 @@ public class PlayListService {
         this.songRepository = songRepository;
     }
 
-    public List<Playlist> getAllPlayLists() {
+    public List<PlayListDto> getAllPlayLists() {
         List<Playlist> allplaylists = playListrepository.findAll();
         if(allplaylists.isEmpty()) {
            throw new BusinessException("there aren't any playlists");
         }
-        return allplaylists;
+        return this.PlayListMapper(allplaylists);
+    }
+    public List<PlayListDto> PlayListMapper(List<Playlist> playlists) {
+        List<PlayListDto> playListDtos = new ArrayList<>();
+        for(Playlist playlist : playlists) {
+            PlayListDto playListDto = new PlayListDto();
+            List<SongDto> listsSongDto = this.MapSongToSongDto(playlist.getSongs());
+            playListDto.setId(playlist.getId());
+            playListDto.setName(playlist.getName());
+            playListDto.setUserId(playlist.getUser().getId());
+            playListDto.setUserName(playlist.getUser().getName());
+
+            for(SongDto s : listsSongDto) {
+                playListDto.getSongs().add(s);
+            }
+            playListDtos.add(playListDto);
+        }
+        return playListDtos;
+    }
+
+    public List<SongDto> MapSongToSongDto(List<Song> song) {
+        List<SongDto> songDtos = new ArrayList<>();
+        for(Song s : song) {
+        SongDto songDto = new SongDto();
+        songDto.setId(s.getId());
+        songDto.setTitle(s.getName());
+        songDto.setArtist(s.getArtist());
+        songDto.setAlbum(null);
+        songDtos.add(songDto);
+        }
+
+        return songDtos;
     }
 
     public List<Playlist> getPlayListsbyUser(String Username) {

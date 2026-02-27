@@ -18,7 +18,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("name")
+    @GetMapping("/byname")
     public ResponseEntity<User> getUserByName(@RequestParam String name) {
         User user=userService.getUserByName(name);
         return ResponseEntity.status(200).body(user);

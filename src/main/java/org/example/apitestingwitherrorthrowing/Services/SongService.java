@@ -33,7 +33,6 @@ public class SongService {
 
     @Async
     public CompletableFuture<Song> save(Song song) {
-        System.out.println(song);
         songRepository.save(song);
         return CompletableFuture.completedFuture(song);
     }
